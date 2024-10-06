@@ -23,7 +23,7 @@ def max_value_sophia(coins):
             F[i][j] = max(pick_i, pick_j)
 
     # El resultado óptimo está en F[0][n-1]
-    return F[0][n - 1]
+    return F
 
 
 # Ejemplo de uso
