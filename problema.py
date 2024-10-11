@@ -9,6 +9,9 @@ OPT(i,j) = max(
 
 import sys
 
+# Desactivate max recursion depth
+sys.setrecursionlimit(10**6)
+
 
 def coin_game(coins, dp, i, j):
     if dp[i][j] != 0:
