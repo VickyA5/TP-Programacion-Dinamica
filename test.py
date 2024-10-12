@@ -1,6 +1,6 @@
 import sys
 import os
-from problema import valor_max_sophia
+from problema_bottom_up import valor_max_sophia
 from reconstruccion import reconstruccion
 
 

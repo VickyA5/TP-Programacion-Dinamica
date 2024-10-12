@@ -3,10 +3,7 @@ def reconstruccion(coins, F):
     i, j = 0, len(coins) - 1
 
     while i <= j:
-        if F[i][j] == coins[j] + min(
-            F[i][j - 2] if j - 2 >= i else 0,
-            F[i + 1][j - 1] if i + 1 <= j - 1 else 0,
-        ):
+        if F[i][j] == coins[j] + F[i][j - 2] or F[i][j] == coins[j] + F[i + 1][j - 1]:
             decisiones.append(f"Sophia toma {coins[j]} de la derecha")
             j -= 1
         else:
@@ -26,7 +23,7 @@ def reconstruccion(coins, F):
 
 
 if __name__ == "__main__":
-    from problema import valor_max_sophia
+    from problema_bottom_up import valor_max_sophia
 
     coins = [1, 10, 5, 12]
     F = valor_max_sophia(coins)

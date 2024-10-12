@@ -14,7 +14,8 @@ sys.setrecursionlimit(10**6)
 
 
 def coin_game(coins, dp, i, j):
-    if dp[i][j] != 0:
+    print(f"i: {i}, j: {j}")
+    if dp[i][j] is not None:
         return dp[i][j]
 
     if i == j:
@@ -36,7 +37,7 @@ def coin_game(coins, dp, i, j):
 
 def valor_max_sophia(coins):
     n = len(coins)
-    dp = [[0] * n for _ in range(n)]
+    dp = [[None] * n for _ in range(n)]
 
     coin_game(coins, dp, 0, n - 1)
 
@@ -46,11 +47,14 @@ def valor_max_sophia(coins):
 if __name__ == "__main__":
     coins = sys.argv[1]
     coins = list(map(int, coins.split(";")))
-    print(f"Monedas: {coins}")
-
     dp = valor_max_sophia(coins)
-    max_value = dp[0][len(coins) - 1]
-    print(f"Ganancia Sophia: {max_value}")
 
-    valor_mateo = sum(coins) - max_value
+    valor_sophia = dp[0][len(coins) - 1]
+    print(f"Ganancia Sophia: {valor_sophia}")
+
+    valor_mateo = sum(coins) - valor_sophia
     print(f"Ganancia Mateo: {valor_mateo}")
+
+    print("Matriz de programación dinámica:")
+    for row in dp:
+        print(row)
