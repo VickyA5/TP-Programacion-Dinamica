@@ -8,6 +8,7 @@ OPT(i,j) = max(
 """
 
 import sys
+from reconstruccion import reconstruccion
 
 # Desactivate max recursion depth
 sys.setrecursionlimit(10**6)
@@ -73,3 +74,7 @@ if __name__ == "__main__":
     print("Matriz de programación dinámica:")
     for row in dp:
         print(row)
+
+    decisiones = reconstruccion(coins, dp)
+    for decision in decisiones:
+        print(decision)
