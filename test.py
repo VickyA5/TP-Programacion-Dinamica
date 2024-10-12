@@ -5,7 +5,7 @@ from reconstruccion import reconstruccion
 import argparse
 
 
-def tests(file_path, problema, with_reconstruccion=False):
+def tests(file_path, problema, with_reconstruccion=False, with_matrix=False):
     try:
         with open(file_path, "r") as file:
             first_line = file.readline().strip()
@@ -26,6 +26,10 @@ def tests(file_path, problema, with_reconstruccion=False):
                 decisiones = reconstruccion(fila, dp)
                 for decision in decisiones:
                     print(decision)
+
+            if with_matrix:
+                for row in dp:
+                    print(row)
 
     except Exception as e:
         print(f"Error al procesar el archivo {file_path}: {e}")
@@ -49,6 +53,10 @@ if __name__ == "__main__":
         "--top-down", action="store_true", help="Enable top-down approach."
     )
 
+    parser.add_argument(
+        "--with-matrix", action="store_true", help="Enable top-down approach."
+    )
+
     # Optional positional argument for file path
     parser.add_argument(
         "file_path",
@@ -61,23 +69,31 @@ if __name__ == "__main__":
     # Parse the arguments
     args = parser.parse_args()
 
+    if args.bottom_up:
+        print("Bottom-up approach")
+        implementation = problema_bottom_up
+    elif args.top_down:
+        print("Top-down approach")
+        implementation = problema_top_down
+    else:
+        print("Bottom-up approach")
+        implementation = problema_bottom_up
+
     if args.file_path:
-        if args.bottom_up:
-            print("Bottom-up approach")
-            tests(args.file_path, problema_bottom_up, args.with_reconstruction)
-        elif args.top_down:
-            print("Top-down approach")
-            tests(args.file_path, problema_top_down, args.with_reconstruction)
-        else:
-            print("Bottom-up approach")
-            tests(args.file_path, problema_bottom_up, args.with_reconstruction)
+        tests(
+            args.file_path,
+            implementation,
+            args.with_reconstruction,
+            args.with_matrix,
+        )
     else:
         for file in os.listdir("test_cases/catedra"):
-            if file.endswith(".txt"):
-                print(f"File: test_cases/catedra/{file}")
-                tests(
-                    f"test_cases/catedra/{file}",
-                    problema_bottom_up,
-                    args.with_reconstruction,
-                )
-                print()
+            file_path = os.path.join("test_cases/catedra", file)
+            print(f"File: {file}")
+            tests(
+                file_path,
+                implementation,
+                args.with_reconstruction,
+                args.with_matrix,
+            )
+            print()
