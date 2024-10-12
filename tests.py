@@ -31,12 +31,12 @@ def tests(file_path, problema, with_reconstruccion=False, with_matrix=False):
                     print(row)
 
     except Exception as e:
-        print(f"Error al procesar el archivo {file_path}: {e}")
+        print(f"Error processing file {file_path}: {e}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="CLI tool with options for reconstruction, bottom-up, top-down and file path."
+        description="CLI tool with options for reconstruction and file path."
     )
 
     parser.add_argument(
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         help="Enable reconstruction process.",
     )
     parser.add_argument(
-        "--with-matrix", action="store_true", help="Enable top-down approach."
+        "--with-matrix", action="store_true", help="Shows the matrix."
     )
 
     parser.add_argument(
