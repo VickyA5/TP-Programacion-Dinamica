@@ -4,19 +4,19 @@ def reconstruccion(coins, F):
 
     while i <= j:
         if F[i][j] == coins[j] + F[i][j - 2] or F[i][j] == coins[j] + F[i + 1][j - 1]:
-            decisiones.append(f"Sophia toma {coins[j]} de la derecha")
+            decisiones.append(f"Sophia debe agarrar la ultima {coins[j]}")
             j -= 1
         else:
-            decisiones.append(f"Sophia toma {coins[i]} de la izquierda")
+            decisiones.append(f"Sophia debe agarrar la primera {coins[i]}")
             i += 1
 
         # Despues del juego de Sophia, juega Mateo
         if i <= j:
             if coins[i] >= coins[j]:
-                decisiones.append(f"Mateo toma {coins[i]} de la izquierda")
+                decisiones.append(f"Mateo agarra la primera {coins[i]}")
                 i += 1
             else:
-                decisiones.append(f"Mateo toma {coins[j]} de la derecha")
+                decisiones.append(f"Mateo agarra la ultima {coins[j]}")
                 j -= 1
 
     return decisiones
