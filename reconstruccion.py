@@ -23,7 +23,7 @@ def reconstruccion(coins, F):
 
 
 if __name__ == "__main__":
-    from problema_bottom_up import valor_max_sophia
+    from problema import valor_max_sophia
 
     coins = [1, 10, 5, 12]
     F = valor_max_sophia(coins)
