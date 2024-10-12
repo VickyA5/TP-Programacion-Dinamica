@@ -1,6 +1,5 @@
 import os
-from problema_top_down import valor_max_sophia as problema_top_down
-from problema_bottom_up import valor_max_sophia as problema_bottom_up
+from problema import valor_max_sophia as problema
 from reconstruccion import reconstruccion
 import argparse
 
@@ -40,44 +39,26 @@ if __name__ == "__main__":
         description="CLI tool with options for reconstruction, bottom-up, top-down and file path."
     )
 
-    # Add optional flags
     parser.add_argument(
         "--with-reconstruction",
         action="store_true",
         help="Enable reconstruction process.",
     )
     parser.add_argument(
-        "--bottom-up", action="store_true", help="Enable bottom-up approach."
-    )
-    parser.add_argument(
-        "--top-down", action="store_true", help="Enable top-down approach."
-    )
-
-    parser.add_argument(
         "--with-matrix", action="store_true", help="Enable top-down approach."
     )
 
-    # Optional positional argument for file path
     parser.add_argument(
         "file_path",
-        nargs="?",  # Makes the file_path optional
+        nargs="?", 
         type=str,
         default=None,
         help="Optional file path for the operation.",
     )
 
-    # Parse the arguments
     args = parser.parse_args()
 
-    if args.bottom_up:
-        print("Bottom-up approach")
-        implementation = problema_bottom_up
-    elif args.top_down:
-        print("Top-down approach")
-        implementation = problema_top_down
-    else:
-        print("Bottom-up approach")
-        implementation = problema_bottom_up
+    implementation = problema
 
     if args.file_path:
         tests(
@@ -87,7 +68,8 @@ if __name__ == "__main__":
             args.with_matrix,
         )
     else:
-        for file in os.listdir("test_cases/catedra"):
+        sorted_files = sorted(os.listdir("test_cases/catedra"), key=lambda x: int(x.split('.')[0]))
+        for file in sorted_files:
             file_path = os.path.join("test_cases/catedra", file)
             print(f"File: {file}")
             tests(

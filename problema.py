@@ -13,10 +13,10 @@ from reconstruccion import reconstruccion
 
 def valor_max_sophia(coins):
     n = len(coins)
-    # Crear una tabla DP para almacenar las soluciones a subproblemas
+
     dp = [[0] * n for _ in range(n)]
 
-    # Llenar la tabla DP de abajo hacia arriba
+    # Llenamos la matriz con los resultados de la recurrencia
     for length in range(1, n + 1):
         for i in range(n - length + 1):
             j = i + length - 1
@@ -51,7 +51,6 @@ def valor_max_sophia(coins):
                 )
                 dp[i][j] = max(a, b, c, d)
 
-    # El resultado está en dp[0][n-1]
     return dp
 
 
