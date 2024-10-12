@@ -1,10 +1,11 @@
-import sys
 import os
-from problema_top_down import valor_max_sophia
+from problema_top_down import valor_max_sophia as problema_top_down
+from problema_bottom_up import valor_max_sophia as problema_bottom_up
 from reconstruccion import reconstruccion
+import argparse
 
 
-def tests(file_path, with_reconstruccion=False):
+def tests(file_path, problema, with_reconstruccion=False):
     try:
         with open(file_path, "r") as file:
             first_line = file.readline().strip()
@@ -13,7 +14,7 @@ def tests(file_path, with_reconstruccion=False):
             else:
                 fila = list(int(i) for i in first_line.split(";") if i)
 
-            dp = valor_max_sophia(fila)
+            dp = problema(fila)
 
             valor_sophia = dp[0][len(fila) - 1]
             print(f"Ganancia Sophia: {valor_sophia}")
@@ -31,33 +32,52 @@ def tests(file_path, with_reconstruccion=False):
 
 
 if __name__ == "__main__":
-    try:
-        # 1 argumento. Se corre con test de catedra
-        if len(sys.argv) == 1:
-            list_files = os.listdir("test_cases/catedra")
-            list_files.sort()
-            for file_path in list_files:
-                print(f"Leyendo archivo: test_cases/catedra/{file_path}")
-                tests(f"test_cases/catedra/{file_path}", False)
-        # 2 argumentos. Si el segundo argumento es --with-reconstruccion, se corre con reconstruccion
-        elif len(sys.argv) == 2 and sys.argv[1] == "--with-reconstruccion":
-            for file_path in os.listdir("test_cases/catedra"):
-                print("Leyendo archivo: ", file_path)
-                tests(f"test_cases/catedra/{file_path}", True)
-        # 2 argumentos. Si el segundo argumento no es --with-reconstruccion, se asume nombre de archivo
-        elif len(sys.argv) == 2 and sys.argv[1] != "--with-reconstruccion":
-            file_path = sys.argv[1]
-            tests(file_path, False)
-        # 3 argumentos. El segundo es el flag de reconstruccion y el tercero es el archivo
-        elif len(sys.argv) == 3:
-            if sys.argv[1] != "--with-reconstruccion":
-                raise Exception("Argumento no reconocido")
+    parser = argparse.ArgumentParser(
+        description="CLI tool with options for reconstruction, bottom-up, top-down and file path."
+    )
 
-            file_path = sys.argv[2]
-            tests(file_path, True)
+    # Add optional flags
+    parser.add_argument(
+        "--with-reconstruction",
+        action="store_true",
+        help="Enable reconstruction process.",
+    )
+    parser.add_argument(
+        "--bottom-up", action="store_true", help="Enable bottom-up approach."
+    )
+    parser.add_argument(
+        "--top-down", action="store_true", help="Enable top-down approach."
+    )
+
+    # Optional positional argument for file path
+    parser.add_argument(
+        "file_path",
+        nargs="?",  # Makes the file_path optional
+        type=str,
+        default=None,
+        help="Optional file path for the operation.",
+    )
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    if args.file_path:
+        if args.bottom_up:
+            print("Bottom-up approach")
+            tests(args.file_path, problema_bottom_up, args.with_reconstruction)
+        elif args.top_down:
+            print("Top-down approach")
+            tests(args.file_path, problema_top_down, args.with_reconstruction)
         else:
-            raise Exception("Argumentos no reconocidos")
-
-    except:
-        print("Uso: python test.py [--with-reconstruccion] [archivo]")
-        print("Si no se especifica un archivo, se correrán los tests de la catedra")
+            print("Bottom-up approach")
+            tests(args.file_path, problema_bottom_up, args.with_reconstruction)
+    else:
+        for file in os.listdir("test_cases/catedra"):
+            if file.endswith(".txt"):
+                print(f"File: test_cases/catedra/{file}")
+                tests(
+                    f"test_cases/catedra/{file}",
+                    problema_bottom_up,
+                    args.with_reconstruction,
+                )
+                print()
