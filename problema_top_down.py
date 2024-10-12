@@ -14,8 +14,7 @@ sys.setrecursionlimit(10**6)
 
 
 def coin_game(coins, dp, i, j):
-    print(f"i: {i}, j: {j}")
-    if dp[i][j] is not None:
+    if dp[i][j] != 0:
         return dp[i][j]
 
     if i == j:
@@ -26,10 +25,26 @@ def coin_game(coins, dp, i, j):
         dp[i][j] = max(coins[i], coins[j])
         return max(coins[i], coins[j])
 
-    a = coins[i] + coin_game(coins, dp, i + 2, j) if coins[i + 1] >= coins[j] else 0
-    b = coins[i] + coin_game(coins, dp, i + 1, j - 1) if coins[i + 1] < coins[j] else 0
-    c = coins[j] + coin_game(coins, dp, i + 1, j - 1) if coins[i] >= coins[j - 1] else 0
-    d = coins[j] + coin_game(coins, dp, i, j - 2) if coins[i] < coins[j - 1] else 0
+    a = (
+        coins[i] + coin_game(coins, dp, i + 2, j)
+        if coins[i + 1] >= coins[j]
+        else 0  # noqa: E501
+    )
+    b = (
+        coins[i] + coin_game(coins, dp, i + 1, j - 1)
+        if coins[i + 1] < coins[j]
+        else 0  # noqa: E501
+    )
+    c = (
+        coins[j] + coin_game(coins, dp, i + 1, j - 1)
+        if coins[i] >= coins[j - 1]
+        else 0  # noqa: E501
+    )
+    d = (
+        coins[j] + coin_game(coins, dp, i, j - 2)
+        if coins[i] < coins[j - 1]
+        else 0  # noqa: E501
+    )
 
     dp[i][j] = max(a, b, c, d)
     return dp[i][j]
@@ -37,7 +52,7 @@ def coin_game(coins, dp, i, j):
 
 def valor_max_sophia(coins):
     n = len(coins)
-    dp = [[None] * n for _ in range(n)]
+    dp = [[0] * n for _ in range(n)]
 
     coin_game(coins, dp, 0, n - 1)
 
