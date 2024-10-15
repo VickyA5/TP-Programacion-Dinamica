@@ -23,8 +23,6 @@ class TestProblemaMonedas(unittest.TestCase):
         valores = self.leer_archivo('test_cases/catedra/5.txt')
         resultado_esperado = self.obtener_resultado_esperado("5.txt") 
         resultado = ganancia_sophia(valores)
-        print(resultado)
-        print(resultado_esperado)
         self.assertEqual(resultado, resultado_esperado)
 
     def test_10(self):
