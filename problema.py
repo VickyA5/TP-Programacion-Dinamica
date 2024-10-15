@@ -16,7 +16,6 @@ def valor_max_sophia(coins):
 
     dp = [[0] * n for _ in range(n)]
 
-    # Llenamos la matriz con los resultados de la recurrencia
     for length in range(1, n + 1):
         for i in range(n - length + 1):
             j = i + length - 1
@@ -27,7 +26,6 @@ def valor_max_sophia(coins):
             # Caso base: dos monedas
             elif i + 1 == j:
                 dp[i][j] = max(coins[i], coins[j])
-            # La recurrencia basada en las elecciones de Sophia y Mateo
             else:
                 a = (
                     coins[i] + dp[i + 2][j]
@@ -52,6 +50,10 @@ def valor_max_sophia(coins):
                 dp[i][j] = max(a, b, c, d)
 
     return dp
+
+def ganancia_sophia(coins):
+    dp = valor_max_sophia(coins)
+    return dp[0][len(coins) - 1]
 
 
 if __name__ == "__main__":
