@@ -79,9 +79,9 @@ if __name__ == "__main__":
             "20_25_30.txt",
             "30_25_25.txt",
         ):
-            filename = "./tp3/test_cases/" + filename
+            filename = "./test_cases/" + filename
             test(filename)
     else:
         filename = sys.argv[1]
-        filename = "./tp3/test_cases/" + filename
+        filename = "./test_cases/" + filename
         test(filename)
