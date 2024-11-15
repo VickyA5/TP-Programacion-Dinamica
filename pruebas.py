@@ -3,6 +3,23 @@ from problema_backtracking import problema
 import time
 
 
+def print_board(board, row_demand, col_demand):
+    print("Mejor solución:")
+    row_inicial = "    " + " ".join(f"{x:02}" for x in col_demand)
+    print(row_inicial)
+    row_inicial = "    " + " ".join(["--" for _ in col_demand])
+    print(row_inicial)
+    i = 0
+    for row in board:
+        row = (
+            f"{row_demand[i]:02}"
+            + " |"
+            + " ".join([" ." if x == 0 else f"{x:02}" for x in row])
+        )
+        print(row)
+        i += 1
+
+
 def open_file(filename):
     rows = []
     cols = []
@@ -43,15 +60,20 @@ def test(filename):
     n = len(row_demand)
     m = len(col_demand)
     board = [[0] * m for _ in range(n)]
-    mejor_solucion = {
-        "board": [[0] * m for _ in range(n)],
-        "demanda_insatisfecha": float("inf"),
-    }
+
+    class MejorSolucion:
+        def __init__(self, board, demanda_insatisfecha):
+            self.board = board
+            self.demanda_insatisfecha = demanda_insatisfecha
+
+    mejor_solucion = MejorSolucion(board, float("inf"))
     barcos = [(i + 1, length) for i, length in enumerate(ships)]
     total_demanda = sum(row_demand) + sum(col_demand)
+    row_demand_inicial = row_demand.copy()
+    col_demand_inicial = col_demand.copy()
 
-    print("Filas:", row_demand)
-    print("Columnas:", col_demand)
+    print("Filas:", row_demand_inicial)
+    print("Columnas:", col_demand_inicial)
     print("Barcos:", ships)
 
     init_time = time.time()
@@ -64,16 +86,11 @@ def test(filename):
     )
     end_time = time.time()
 
-    print("Mejor solución:")
-    for row in mejor_solucion["board"]:
-        row = " ".join([" -" if x == 0 else f"{x:02}" for x in row])
-        print(row)
-
-    demanda_satisfecha = total_demanda - mejor_solucion["demanda_insatisfecha"]
+    print_board(mejor_solucion.board, row_demand_inicial, col_demand_inicial)
 
     print(f"Demanda total: {total_demanda}")
-    print(f"Demanda cumplida: {demanda_satisfecha}")
-    print(f"Demanda insatisfecha: {mejor_solucion['demanda_insatisfecha']}")
+    print(f"Demanda cumplida: {total_demanda - mejor_solucion.demanda_insatisfecha}")
+    print(f"Demanda insatisfecha: {mejor_solucion.demanda_insatisfecha}")
 
     print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
 
