@@ -1,7 +1,6 @@
 import sys
-from problema_backtracking import backtrack
-
-types = ["demandas_filas", "demandas_columnas", "barcos"]
+from problema_backtracking import problema
+import time
 
 
 def open_file(filename):
@@ -44,25 +43,39 @@ def test(filename):
     n = len(row_demand)
     m = len(col_demand)
     board = [[0] * m for _ in range(n)]
+    mejor_solucion = {
+        "board": [[0] * m for _ in range(n)],
+        "demanda_insatisfecha": float("inf"),
+    }
+    barcos = [(i + 1, length) for i, length in enumerate(ships)]
+    total_demanda = sum(row_demand) + sum(col_demand)
 
     print("Filas:", row_demand)
     print("Columnas:", col_demand)
+    print("Barcos:", ships)
 
-    board = [[0] * m for _ in range(n)]
-    solution = [[0] * m for _ in range(n)]
-    min_unmet = [float("inf")]
-    total_demanda = sum(row_demand) + sum(col_demand)
+    init_time = time.time()
+    problema(
+        board,
+        barcos,
+        row_demand,
+        col_demand,
+        mejor_solucion,
+    )
+    end_time = time.time()
 
-    backtrack(board, ships, row_demand, col_demand, min_unmet, solution)
-
-    for row in solution:
+    print("Mejor solución:")
+    for row in mejor_solucion["board"]:
+        row = " ".join([" -" if x == 0 else f"{x:02}" for x in row])
         print(row)
 
-    demanda_satisfecha = total_demanda - min_unmet[0]
+    demanda_satisfecha = total_demanda - mejor_solucion["demanda_insatisfecha"]
 
     print(f"Demanda total: {total_demanda}")
     print(f"Demanda cumplida: {demanda_satisfecha}")
-    print(f"Demanda insatisfecha: {min_unmet[0]}")
+    print(f"Demanda insatisfecha: {mejor_solucion['demanda_insatisfecha']}")
+
+    print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
 
 
 if __name__ == "__main__":
@@ -81,6 +94,7 @@ if __name__ == "__main__":
         ):
             filename = "./test_cases/" + filename
             test(filename)
+            print()
     else:
         filename = sys.argv[1]
         filename = "./test_cases/" + filename
