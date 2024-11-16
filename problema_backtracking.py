@@ -154,9 +154,9 @@ def backtracking(board, barcos, row_demand, col_demand, mejor_solucion):
     demanda_insatisfecha = sum(d for d in row_demand) + sum(d for d in col_demand)
 
     # Actualizar mejor solución
-    if demanda_insatisfecha < mejor_solucion.demanda_insatisfecha:
-        mejor_solucion.demanda_insatisfecha = demanda_insatisfecha
-        mejor_solucion.board = [[cell for cell in row] for row in board]
+    if demanda_insatisfecha < mejor_solucion[1]:
+        mejor_solucion[1] = demanda_insatisfecha
+        mejor_solucion[0] = [[cell for cell in row] for row in board]
 
     # Caso base
     if not barcos:
@@ -165,7 +165,7 @@ def backtracking(board, barcos, row_demand, col_demand, mejor_solucion):
     # backtrack
     if (
         demanda_insatisfecha - sum(barco[1] * 2 for barco in barcos)
-        >= mejor_solucion.demanda_insatisfecha
+        >= mejor_solucion[1]
     ):
         return
 

@@ -60,13 +60,7 @@ def test(filename):
     n = len(row_demand)
     m = len(col_demand)
     board = [[0] * m for _ in range(n)]
-
-    class MejorSolucion:
-        def __init__(self, board, demanda_insatisfecha):
-            self.board = board
-            self.demanda_insatisfecha = demanda_insatisfecha
-
-    mejor_solucion = MejorSolucion(board, float("inf"))
+    mejor_solucion = [board, float("inf")]
     barcos = [(i + 1, length) for i, length in enumerate(ships)]
     total_demanda = sum(row_demand) + sum(col_demand)
     row_demand_inicial = row_demand.copy()
@@ -86,11 +80,11 @@ def test(filename):
     )
     end_time = time.time()
 
-    print_board(mejor_solucion.board, row_demand_inicial, col_demand_inicial)
+    print_board(mejor_solucion[0], row_demand_inicial, col_demand_inicial)
 
     print(f"Demanda total: {total_demanda}")
-    print(f"Demanda cumplida: {total_demanda - mejor_solucion.demanda_insatisfecha}")
-    print(f"Demanda insatisfecha: {mejor_solucion.demanda_insatisfecha}")
+    print(f"Demanda cumplida: {total_demanda - mejor_solucion[1]}")
+    print(f"Demanda insatisfecha: {mejor_solucion[1]}")
 
     print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
 
