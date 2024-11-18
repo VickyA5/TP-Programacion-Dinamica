@@ -19,3 +19,13 @@ Por ejemplo, para ejecutar una prueba de `./test_cases/3_3_2.txt`, se debe ejecu
 ```bash
 python3 pruebas.py 3_3_2.txt
 ```
+
+## Aproximación
+
+Para ejecutar el algoritmo de aproximación con alguna de las pruebas, por ejemplo 
+
+`./test_cases/3_3_2.txt`, se debe ejecutar:
+
+```bash
+python3 aproximacion.py 3_3_2.txt
+```
