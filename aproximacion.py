@@ -1,5 +1,6 @@
 from pruebas import open_file, print_board
 import sys
+import time
 
 '''
  Ir a fila/columna de mayor demanda, y ubicar el barco de mayor longitud en dicha fila/columna
@@ -72,12 +73,25 @@ if __name__ == "__main__":
     filename = "./test_cases/" + filename
 
     row_demand, col_demand, ships = open_file(filename)
+    original_row_demand = row_demand.copy()
+    original_col_demand = col_demand.copy()
+    original_ships = ships.copy()
+    #total_demanda = sum(row_demand) + sum(col_demand)
     n = len(row_demand)
     m = len(col_demand)
     barcos = [(i + 1, length) for i, length in enumerate(ships)]
     board = [[0] * m for _ in range(n)]
+    init_time = time.time()
     board_final = aproximar(row_demand, col_demand, barcos, board)
-    print("Filas:", row_demand)
-    print("Columnas:", col_demand)
-    print("Barcos:", ships)
-    print_board(board_final, row_demand, col_demand)
+    end_time = time.time()
+
+    print("Filas:", original_row_demand)
+    print("Columnas:", original_col_demand)
+    print("Barcos:", original_ships)
+
+    print_board(board_final, original_row_demand, original_col_demand)
+    
+    #print(f"Demanda total: {total_demanda}")
+    #print(f"Demanda cumplida: {total_demanda - mejor_solucion[1]}")
+    #print(f"Demanda insatisfecha: {mejor_solucion[1]}")
+    print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
