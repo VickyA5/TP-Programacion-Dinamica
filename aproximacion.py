@@ -10,7 +10,7 @@ import sys
 
 # TODO: Revisar, incluir en el informe, mediciones, y el tema de cuan buena aproximacion es 
 
-def can_place(board, max_demand_index, j, k, ship_size):
+def can_place(board, max_demand_index, j, ship_size):
     return all(board[max_demand_index][j + k] == 0 for k in range(ship_size))
 
 def aproximar(row_demand, col_demand, ships, board):
@@ -29,8 +29,7 @@ def aproximar(row_demand, col_demand, ships, board):
                 if ship_size <= max_row_demand:
                     # Intentar colocar el barco horizontalmente en la fila
                     for j in range(len(board[0])):
-                        # Verificar si hay espacio suficiente y está vacío
-                        if all(board[max_demand_index][j + k] == 0 for k in range(ship_size)):
+                        if can_place(board, max_demand_index, j, ship_size):
                             for k in range(ship_size):
                                 board[max_demand_index][j + k] = index
                             row_demand[max_demand_index] -= ship_size
@@ -51,8 +50,7 @@ def aproximar(row_demand, col_demand, ships, board):
                 if ship_size <= max_col_demand:
                     # Intentar colocar el barco verticalmente en la columna
                     for i in range(len(board)):
-                        # Verificar si hay espacio suficiente y está vacío
-                        if all(board[i + k][max_demand_index] == 0 for k in range(ship_size)):
+                        if can_place(board, max_demand_index, i, ship_size):
                             for k in range(ship_size):
                                 board[i + k][max_demand_index] = index
                             col_demand[max_demand_index] -= ship_size
