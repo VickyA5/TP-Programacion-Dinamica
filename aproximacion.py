@@ -1,4 +1,5 @@
 from pruebas import open_file, print_board
+from problema_backtracking import can_place, place_ship
 import sys
 import time
 
@@ -11,9 +12,6 @@ import time
 
 # TODO: Revisar, incluir en el informe, mediciones, y el tema de cuan buena aproximacion es 
 
-def can_place(board, max_demand_index, j, ship_size):
-    return all(board[max_demand_index][j + k] == 0 for k in range(ship_size))
-
 def aproximar(row_demand, col_demand, ships, board):
     ships.sort(key=lambda x: x[1], reverse=True)
 
@@ -22,24 +20,21 @@ def aproximar(row_demand, col_demand, ships, board):
         max_col_demand = max(col_demand)
         
         if max_row_demand >= max_col_demand:
-            # Encontrar el índice de la fila con la demanda máxima
             max_demand_index = row_demand.index(max_row_demand)
-            # Intentar colocar los barcos en la fila con la demanda máxima
             for ship in ships:
                 index, ship_size = ship
                 if ship_size <= max_row_demand:
                     # Intentar colocar el barco horizontalmente en la fila
                     for j in range(len(board[0])):
-                        if can_place(board, max_demand_index, j, ship_size):
-                            for k in range(ship_size):
-                                board[max_demand_index][j + k] = index
-                            row_demand[max_demand_index] -= ship_size
+                        if can_place(board, max_demand_index, j, ship_size, True, row_demand, col_demand):
+                            place_ship(board, max_demand_index, j, ship, True, row_demand, col_demand)
                             ships.remove(ship)
                             break
                     else:
                         # Continuar con el siguiente barco si no se pudo colocar
                         continue
                     break
+
             else:
                 # Si no se pudo colocar ningún barco, salir del bucle
                 break
@@ -51,10 +46,8 @@ def aproximar(row_demand, col_demand, ships, board):
                 if ship_size <= max_col_demand:
                     # Intentar colocar el barco verticalmente en la columna
                     for i in range(len(board)):
-                        if can_place(board, max_demand_index, i, ship_size):
-                            for k in range(ship_size):
-                                board[i + k][max_demand_index] = index
-                            col_demand[max_demand_index] -= ship_size
+                        if can_place(board, i, max_demand_index, ship_size, False, row_demand, col_demand):
+                            place_ship(board, i, max_demand_index, ship, False, row_demand, col_demand)
                             ships.remove(ship)
                             break
                     else:
@@ -64,6 +57,7 @@ def aproximar(row_demand, col_demand, ships, board):
             else:
                 # Si no se pudo colocar ningún barco
                 break
+            
     return board
 
 
