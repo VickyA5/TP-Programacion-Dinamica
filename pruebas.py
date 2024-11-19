@@ -4,7 +4,7 @@ import time
 
 
 def print_board(board, row_demand, col_demand):
-    print("Mejor solución:")
+    print("\nMejor solución:\n")
     row_inicial = "    " + " ".join(f"{x:02}" for x in col_demand)
     print(row_inicial)
     row_inicial = "    " + " ".join(["--" for _ in col_demand])
@@ -18,6 +18,7 @@ def print_board(board, row_demand, col_demand):
         )
         print(row)
         i += 1
+    print()
 
 
 def open_file(filename):
