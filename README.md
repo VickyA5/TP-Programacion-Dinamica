@@ -1,5 +1,9 @@
 # TP3
 
+Si se desean agregar casos de prueba, se debe agregar un .txt en la carpeta "test_cases" con el siguiente formato: n filas con las demandas de las filas (cada demanda en un renglón diferente), luego m filas con las demandas de las columnas (cada demanda en un renglón diferente) y luego k filas con el largo de los barcos (cada largo en un renglón diferente), separadas por una línea en blanco.
+
+El resultado se visualizará como una matriz con las demandas, donde los espacios ocupados por barcos se representarán con el índice del barco correspondiente en el vector de largos de los barcos. Esto comenzando desde 1, es decir el primer barco del vector se representará con el número 1, el segundo con un 2, etc.
+
 ## Backtracking
 
 Para ejecutar **todas las pruebas de la catedra**, ejecutar (siempre desde el root del repositorio)
