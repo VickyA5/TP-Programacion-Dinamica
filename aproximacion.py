@@ -13,10 +13,11 @@ import time
 # TODO: incluir en el informe, mediciones, y el tema de cuan buena aproximacion es 
 
 def aproximar(row_demand, col_demand, ships, board):
-    ships.sort(key=lambda x: x[1], reverse=True)
+    ships.sort(key=lambda x: x[1], reverse=True)  # Ordenar los barcos por tamaño de mayor a menor
     demanda_cumplida = 0
+    ship_indices = list(range(len(ships))) 
 
-    while ships:
+    while ship_indices:
         max_row_demand = max(row_demand)
         max_col_demand = max(col_demand)
         
@@ -25,46 +26,49 @@ def aproximar(row_demand, col_demand, ships, board):
 
         if max_row_demand >= max_col_demand:
             max_demand_index = row_demand.index(max_row_demand)
-            for ship in ships:
-                index, ship_size = ship
+            placed_ship = False  
+
+            for i in ship_indices:
+                index, ship_size = ships[i]
                 if ship_size <= max_row_demand:
                     # Intentar colocar el barco horizontalmente en la fila
                     for j in range(len(board[0])):
                         if can_place(board, max_demand_index, j, ship_size, True, row_demand, col_demand):
-                            place_ship(board, max_demand_index, j, ship, True, row_demand, col_demand)
+                            place_ship(board, max_demand_index, j, ships[i], True, row_demand, col_demand)
                             demanda_cumplida += ship_size
-                            ships.remove(ship)
+                            ship_indices.remove(i)  
+                            placed_ship = True
                             break
-                    else:
-                        # Continuar con el siguiente barco si no se pudo colocar
-                        continue
-                    break
+                    if placed_ship:
+                        break
 
-            else:
-                # Si no se pudo colocar ningún barco, salir del bucle
+            if not placed_ship:  # Si no se colocó ningún barco, salir del bucle
                 break
+
         else:
             max_demand_index = col_demand.index(max_col_demand)
+            placed_ship = False  # Bandera para verificar si un barco fue colocado
+
             # Intentar colocar los barcos en la columna con la demanda máxima
-            for ship in ships:
-                index, ship_size = ship
+            for i in ship_indices:
+                index, ship_size = ships[i]
                 if ship_size <= max_col_demand:
                     # Intentar colocar el barco verticalmente en la columna
-                    for i in range(len(board)):
-                        if can_place(board, i, max_demand_index, ship_size, False, row_demand, col_demand):
-                            place_ship(board, i, max_demand_index, ship, False, row_demand, col_demand)
+                    for j in range(len(board)):
+                        if can_place(board, j, max_demand_index, ship_size, False, row_demand, col_demand):
+                            place_ship(board, j, max_demand_index, ships[i], False, row_demand, col_demand)
                             demanda_cumplida += ship_size
-                            ships.remove(ship)
+                            ship_indices.remove(i)  
+                            placed_ship = True
                             break
-                    else:
-                        # Continuar con el siguiente barco si no se pudo colocar
-                        continue
-                    break
-            else:
-                # Si no se pudo colocar ningún barco
+                    if placed_ship:
+                        break
+
+            if not placed_ship:  # Si no se colocó ningún barco, salir del bucle
                 break
     
     return board, demanda_cumplida
+
 
 def print_result(row_demand, 
                  col_demand, ships, 
