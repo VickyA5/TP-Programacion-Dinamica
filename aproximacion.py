@@ -20,6 +20,9 @@ def aproximar(row_demand, col_demand, ships, board):
         max_row_demand = max(row_demand)
         max_col_demand = max(col_demand)
         
+        if max_row_demand == 0 and max_col_demand == 0:
+            break
+
         if max_row_demand >= max_col_demand:
             max_demand_index = row_demand.index(max_row_demand)
             for ship in ships:
