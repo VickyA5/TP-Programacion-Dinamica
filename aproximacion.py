@@ -13,7 +13,7 @@ import time
 # TODO: incluir en el informe, mediciones, y el tema de cuan buena aproximacion es 
 
 def aproximar(row_demand, col_demand, ships, board):
-    ships.sort(key=lambda x: x[1], reverse=True)  # Ordenar los barcos por tamaño de mayor a menor
+    ships.sort(key=lambda x: x[1], reverse=True)  
     demanda_cumplida = 0
     ship_indices = list(range(len(ships))) 
 
@@ -47,7 +47,7 @@ def aproximar(row_demand, col_demand, ships, board):
 
         else:
             max_demand_index = col_demand.index(max_col_demand)
-            placed_ship = False  # Bandera para verificar si un barco fue colocado
+            placed_ship = False  
 
             # Intentar colocar los barcos en la columna con la demanda máxima
             for i in ship_indices:
