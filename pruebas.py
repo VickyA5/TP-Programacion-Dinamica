@@ -133,4 +133,4 @@ if __name__ == "__main__":
     else:
         filename = sys.argv[2]
         filename = "./test_cases/" + filename
-        test(filename)
+        test(filename, problema)
