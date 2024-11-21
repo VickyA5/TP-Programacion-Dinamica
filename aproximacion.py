@@ -33,7 +33,7 @@ def aproximar(row_demand, col_demand, ships, board):
                     for j in range(len(board[0])):
                         if can_place(board, max_demand_index, j, ship_size, True, row_demand, col_demand):
                             place_ship(board, max_demand_index, j, ships[i], True, row_demand, col_demand)
-                            demanda_cumplida += ship_size
+                            demanda_cumplida += (ship_size * 2)
                             ship_indices.remove(i)  
                             placed_ship = True
                             break
@@ -55,7 +55,7 @@ def aproximar(row_demand, col_demand, ships, board):
                     for j in range(len(board)):
                         if can_place(board, j, max_demand_index, ship_size, False, row_demand, col_demand):
                             place_ship(board, j, max_demand_index, ships[i], False, row_demand, col_demand)
-                            demanda_cumplida += ship_size
+                            demanda_cumplida += (ship_size * 2)
                             ship_indices.remove(i)  
                             placed_ship = True
                             break
