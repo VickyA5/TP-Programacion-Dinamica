@@ -93,7 +93,7 @@ def test(filename, problema):
 
     if problema == "pl":
         init_time = time.time()
-        problema_pl(
+        board, _ = problema_pl(
             n,
             m,
             demandas_filas=row_demand,
@@ -103,6 +103,7 @@ def test(filename, problema):
         end_time = time.time()
 
         print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
+        print_board(board, row_demand_inicial, col_demand_inicial)
 
 
 if __name__ == "__main__":
