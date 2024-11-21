@@ -58,12 +58,9 @@ def test(filename, problema):
     print(f"Testeando {filename}")
 
     row_demand, col_demand, ships = open_file(filename)
-
     n = len(row_demand)
     m = len(col_demand)
-    board = [[0] * m for _ in range(n)]
-    mejor_solucion = [board, float("inf")]
-    barcos = [(i + 1, length) for i, length in enumerate(ships)]
+
     total_demanda = sum(row_demand) + sum(col_demand)
     row_demand_inicial = row_demand.copy()
     col_demand_inicial = col_demand.copy()
@@ -73,6 +70,9 @@ def test(filename, problema):
     print("Barcos:", ships)
 
     if problema == "b":
+        board = [[0] * m for _ in range(n)]
+        barcos = [(i + 1, length) for i, length in enumerate(ships)]
+        mejor_solucion = [board, float("inf")]
         init_time = time.time()
         problema_backtracking(
             board,
