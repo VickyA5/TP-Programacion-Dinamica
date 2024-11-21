@@ -93,7 +93,7 @@ def test(filename, problema):
 
     if problema == "pl":
         init_time = time.time()
-        board, _ = problema_pl(
+        board, demanda_cumplida = problema_pl(
             n,
             m,
             demandas_filas=row_demand,
@@ -104,6 +104,7 @@ def test(filename, problema):
 
         print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
         print_board(board, row_demand_inicial, col_demand_inicial)
+        print("Demanda cumplida:", demanda_cumplida)
 
 
 if __name__ == "__main__":
@@ -117,12 +118,12 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 2:
         for filename in (
-            "3_3_2.txt",
-            "5_5_6.txt",
-            "8_7_10.txt",
-            "10_3_3.txt",
-            "10_10_10.txt",
-            "12_12_21.txt",
+            # "3_3_2.txt",
+            # "5_5_6.txt",
+            # "8_7_10.txt",
+            # "10_3_3.txt",
+            # "10_10_10.txt",
+            # "12_12_21.txt",
             "15_10_15.txt",
             "20_20_20.txt",
             "20_25_30.txt",
