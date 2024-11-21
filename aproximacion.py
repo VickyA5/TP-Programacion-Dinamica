@@ -10,8 +10,6 @@ import time
  o no haya más demandas a cumplir.
 '''
 
-# TODO: incluir en el informe, mediciones, y el tema de cuan buena aproximacion es 
-
 def aproximar(row_demand, col_demand, ships, board):
     ships.sort(key=lambda x: x[1], reverse=True)  
     demanda_cumplida = 0

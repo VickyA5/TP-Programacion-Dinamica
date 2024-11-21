@@ -4,6 +4,13 @@ Si se desean agregar casos de prueba, se debe agregar un .txt en la carpeta "tes
 
 El resultado se visualizará como una matriz con las demandas, donde los espacios ocupados por barcos se representarán con el índice del barco correspondiente en el vector de largos de los barcos. Esto comenzando desde 1, es decir el primer barco del vector se representará con el número 1, el segundo con un 2, etc.
 
+Para generar automáticamente casos de prueba, ejecutar:
+
+```bash
+python3 generate_tests.py n m b
+```
+Donde n será la cantidad de filas, m la cantidad de columnas, y b la cantidad de barcos.
+
 ## Backtracking
 
 Para ejecutar **todas las pruebas de la catedra**, ejecutar (siempre desde el root del repositorio)
