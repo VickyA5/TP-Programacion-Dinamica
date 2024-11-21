@@ -108,8 +108,11 @@ def test(filename, problema):
 if __name__ == "__main__":
     if sys.argv[1] == "pl":
         problema = "pl"
-    if sys.argv[1] == "b":
+    elif sys.argv[1] == "b":
         problema = "b"
+    else:
+        print("Modo de uso: python pruebas.py <b/pl> <archivo>")
+        exit()
 
     if len(sys.argv) == 2:
         for filename in (
