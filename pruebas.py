@@ -1,5 +1,6 @@
 import sys
-from problema_backtracking import problema
+from problema_backtracking import problema as problema_backtracking
+from problema_pl import problema as problema_pl
 import time
 
 
@@ -53,7 +54,7 @@ def open_file(filename):
     return rows, cols, barcos
 
 
-def test(filename):
+def test(filename, problema):
     print(f"Testeando {filename}")
 
     row_demand, col_demand, ships = open_file(filename)
@@ -71,27 +72,46 @@ def test(filename):
     print("Columnas:", col_demand_inicial)
     print("Barcos:", ships)
 
-    init_time = time.time()
-    problema(
-        board,
-        barcos,
-        row_demand,
-        col_demand,
-        mejor_solucion,
-    )
-    end_time = time.time()
+    if problema == "b":
+        init_time = time.time()
+        problema_backtracking(
+            board,
+            barcos,
+            row_demand,
+            col_demand,
+            mejor_solucion,
+        )
+        end_time = time.time()
 
-    print_board(mejor_solucion[0], row_demand_inicial, col_demand_inicial)
+        print_board(mejor_solucion[0], row_demand_inicial, col_demand_inicial)
 
-    print(f"Demanda total: {total_demanda}")
-    print(f"Demanda cumplida: {total_demanda - mejor_solucion[1]}")
-    print(f"Demanda insatisfecha: {mejor_solucion[1]}")
+        print(f"Demanda total: {total_demanda}")
+        print(f"Demanda cumplida: {total_demanda - mejor_solucion[1]}")
+        print(f"Demanda insatisfecha: {mejor_solucion[1]}")
 
-    print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
+        print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
+
+    if problema == "pl":
+        init_time = time.time()
+        problema_pl(
+            n,
+            m,
+            demandas_filas=row_demand,
+            demandas_columnas=col_demand,
+            barcos=ships,
+        )
+        end_time = time.time()
+
+        print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
+    if sys.argv[1] == "pl":
+        problema = "pl"
+    if sys.argv[1] == "b":
+        problema = "b"
+
+    if len(sys.argv) == 2:
         for filename in (
             "3_3_2.txt",
             "5_5_6.txt",
@@ -105,9 +125,9 @@ if __name__ == "__main__":
             "30_25_25.txt",
         ):
             filename = "./test_cases/" + filename
-            test(filename)
+            test(filename, problema)
             print()
     else:
-        filename = sys.argv[1]
+        filename = sys.argv[2]
         filename = "./test_cases/" + filename
         test(filename)
