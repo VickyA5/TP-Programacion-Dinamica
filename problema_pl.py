@@ -1,12 +1,12 @@
+# pylint: disable=consider-using-enumerate
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum, value
 
 
 def problema(n, m, demandas_filas, demandas_columnas, barcos):
-    # MODELO
+    # Crear problema de programación lineal
     problema = LpProblem("Minimizar_Demanda_Insatisfecha", LpMinimize)
 
-    # VARIABLES
-    # Posiciones iniciales de los barcos
+    # Posiciones iniciales de los barcos tanto horizontales como verticales
     barcos_h = LpVariable.dicts(
         "y",
         [(i, j, k) for i in range(n) for j in range(m) for k in range(len(barcos))],
@@ -14,8 +14,6 @@ def problema(n, m, demandas_filas, demandas_columnas, barcos):
         1,
         cat="Binary",
     )
-
-    # Variables que representa si un barco es posicionado de forma horizontal o vertical
     barcos_v = LpVariable.dicts(
         "h",
         [(i, j, k) for i in range(n) for j in range(m) for k in range(len(barcos))],
@@ -28,13 +26,12 @@ def problema(n, m, demandas_filas, demandas_columnas, barcos):
     d_filas = LpVariable.dicts("d_filas", range(n), 0, None, cat="Integer")
     d_columnas = LpVariable.dicts("d_columnas", range(m), 0, None, cat="Integer")
 
-    # FUNCIÓN OBJETIVO: minimizar la demanda insatisfecha total
+    # Funcion objetivo: minimizar la demanda insatisfecha total
     problema += (
         lpSum(d_filas[i] for i in range(n)) + lpSum(d_columnas[j] for j in range(m)),
         "Demanda_Insatisfecha_Total",
     )
 
-    # RESTRICCIONES
     # Demandas instafisfecha por filas
     for i in range(n):
         problema += (
@@ -144,96 +141,92 @@ def problema(n, m, demandas_filas, demandas_columnas, barcos):
                     if k == k_otro:
                         continue
 
-                    if i + 1 < n and j + largo + 1 < m:
-                        problema += (
-                            barcos_h[i, j, k] + barcos_h[i + 1, j + largo + 1, k_otro]
-                            <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i}_{j}_caso_borde_encontrado_1",
-                        )
-                        problema += (
-                            barcos_h[i, j, k] + barcos_v[i + 1, j + largo + 1, k_otro]
-                            <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j}_caso_borde_encontrado_1",
-                        )
-
-                    for l in range(largo):
-                        if i - 1 >= 0 and j + l < m:
-                            problema += (
-                                barcos_h[i, j, k] + barcos_h[i - 1, j + l, k_otro] <= 1,
-                                f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j + l}",
-                            )
-                            problema += (
-                                barcos_h[i, j, k] + barcos_v[i - 1, j + l, k_otro] <= 1,
-                                f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j + l}",
-                            )
-                        if i + 1 < n and j + l < m:
-                            problema += (
-                                barcos_h[i, j, k] + barcos_h[i + 1, j + l, k_otro] <= 1,
-                                f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + 1}_{j + l}",
-                            )
-                            problema += (
-                                barcos_h[i, j, k] + barcos_v[i + 1, j + l, k_otro] <= 1,
-                                f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + 1}_{j + l}",
-                            )
-
-                    if j + largo < m:
-                        problema += (
-                            barcos_h[i, j, k] + barcos_h[i, j + largo, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i}_{j + largo}",
-                        )
-                        problema += (
-                            barcos_h[i, j, k] + barcos_v[i, j + largo, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j + largo}",
-                        )
-                        if i - 1 >= 0:
-                            problema += (
-                                barcos_h[i, j, k] + barcos_h[i - 1, j + largo, k_otro]
-                                <= 1,
-                                f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j + largo}",
-                            )
-                            problema += (
-                                barcos_h[i, j, k] + barcos_v[i - 1, j + largo, k_otro]
-                                <= 1,
-                                f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j + largo}",
-                            )
-
-                    # No se pueden superponer barcos
-                    problema += (
-                        barcos_h[i, j, k] + barcos_h[i, j, k_otro] <= 1,
-                        f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i}_{j}",
-                    )
-                    problema += (
-                        barcos_h[i, j, k] + barcos_v[i, j, k_otro] <= 1,
-                        f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j}",
-                    )
-
-                    if j - 1 >= 0:
-                        problema += (
-                            barcos_h[i, j, k] + barcos_h[i, j - 1, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i}_{j - 1}",
-                        )
-                        problema += (
-                            barcos_h[i, j, k] + barcos_v[i, j - 1, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j - 1}",
-                        )
-
+                    # Verificar que alrededor de la posicion inicial del barco no haya otro barco
                     if i - 1 >= 0 and j - 1 >= 0:
                         problema += (
                             barcos_h[i, j, k] + barcos_h[i - 1, j - 1, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j - 1}",
+                            f"posocion_inicial_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j - 1}",
                         )
                         problema += (
                             barcos_h[i, j, k] + barcos_v[i - 1, j - 1, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j - 1}",
+                            f"posocion_inicial_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j - 1}",
+                        )
+                    if j - 1 >= 0:
+                        problema += (
+                            barcos_h[i, j, k] + barcos_h[i, j - 1, k_otro] <= 1,
+                            f"posocion_inicial_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i}_{j - 1}_",
+                        )
+                        problema += (
+                            barcos_h[i, j, k] + barcos_v[i, j - 1, k_otro] <= 1,
+                            f"posocion_inicial_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j - 1}",
                         )
                     if i + 1 < n and j - 1 >= 0:
                         problema += (
                             barcos_h[i, j, k] + barcos_h[i + 1, j - 1, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + 1}_{j - 1}",
+                            f"posocion_inicial_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + 1}_{j - 1}",
                         )
                         problema += (
                             barcos_h[i, j, k] + barcos_v[i + 1, j - 1, k_otro] <= 1,
-                            f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + 1}_{j - 1}",
+                            f"posocion_inicial_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + 1}_{j - 1}",
+                        )
+
+                    # Verificar que a lo largo del barco no haya otro en la misma posicion, ni de forma adyacente
+                    for l in range(largo):
+                        if j + l < m:
+                            problema += (
+                                barcos_h[i, j, k] + barcos_h[i, j + l, k_otro] <= 1,
+                                f"barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i}_{j + l}",
+                            )
+                            problema += (
+                                barcos_h[i, j, k] + barcos_v[i, j + l, k_otro] <= 1,
+                                f"barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j + l}",
+                            )
+                        if i - 1 >= 0 and j + l < m:
+                            problema += (
+                                barcos_h[i, j, k] + barcos_h[i - 1, j + l, k_otro] <= 1,
+                                f"adyacencia_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j + l}",
+                            )
+                            problema += (
+                                barcos_h[i, j, k] + barcos_v[i - 1, j + l, k_otro] <= 1,
+                                f"adyacencia_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j + l}",
+                            )
+                        if i + 1 < n and j + l < m:
+                            problema += (
+                                barcos_h[i, j, k] + barcos_h[i + 1, j + l, k_otro] <= 1,
+                                f"adyacencia_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + 1}_{j + l}",
+                            )
+                            problema += (
+                                barcos_h[i, j, k] + barcos_v[i + 1, j + l, k_otro] <= 1,
+                                f"adyacencia_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + 1}_{j + l}",
+                            )
+
+                    # Verificar que al rededor de la posicion final del barco no haya otro barco
+                    if j + largo < m:
+                        problema += (
+                            barcos_h[i, j, k] + barcos_h[i, j + largo, k_otro] <= 1,
+                            f"posicion_final_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i}_{j + largo}",
+                        )
+                        problema += (
+                            barcos_h[i, j, k] + barcos_v[i, j + largo, k_otro] <= 1,
+                            f"posicion_final_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j + largo}",
+                        )
+                    if i - 1 >= 0 and j + largo < m:
+                        problema += (
+                            barcos_h[i, j, k] + barcos_h[i - 1, j + largo, k_otro] <= 1,
+                            f"posicion_final_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j + largo}",
+                        )
+                        problema += (
+                            barcos_h[i, j, k] + barcos_v[i - 1, j + largo, k_otro] <= 1,
+                            f"posicion_final_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j + largo}",
+                        )
+                    if i + 1 < n and j + largo < m:
+                        problema += (
+                            barcos_h[i, j, k] + barcos_h[i + 1, j + largo, k_otro] <= 1,
+                            f"posicion_final_barco_H_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + 1}_{j + largo}",
+                        )
+                        problema += (
+                            barcos_h[i, j, k] + barcos_v[i + 1, j + largo, k_otro] <= 1,
+                            f"posicion_final_barco_H_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + 1}_{j + largo}",
                         )
 
     # Restricciones de adyacencia de barcos verticales
@@ -245,115 +238,92 @@ def problema(n, m, demandas_filas, demandas_columnas, barcos):
                     if k == k_otro:
                         continue
 
-                    problema += (
-                        barcos_v[i, j, k] + barcos_v[i, j, k_otro] <= 1,
-                        f"barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j}_caso_borde_encontrado_2",
-                    )
-
-                    if i + largo < n and j + 1 < m:
-                        problema += (
-                            barcos_v[i, j, k] + barcos_v[i + largo, j + 1, k_otro] <= 1,
-                            f"barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + 1}_{j + 1}_caso_borde_encontrado_1",
-                        )
-                        problema += (
-                            barcos_v[i, j, k] + barcos_h[i + largo, j + 1, k_otro] <= 1,
-                            f"barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + 1}_{j + 1}_caso_borde_encontrado_1",
-                        )
-
-                    if i + largo < n:
-                        problema += (
-                            barcos_v[i, j, k] + barcos_v[i + largo, j, k_otro] <= 1,
-                            f"barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + largo}_{j}_caso_borde_encontrado_1",
-                        )
-                        problema += (
-                            barcos_v[i, j, k] + barcos_h[i + largo, j, k_otro] <= 1,
-                            f"barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + largo}_{j}_caso_borde_encontrado_1",
-                        )
-
-                    for l in range(largo):
-                        if j - 1 >= 0 and i + l < n:
-                            problema += (
-                                barcos_v[i, j, k] + barcos_h[i + l, j - 1, k_otro] <= 1,
-                                f"adyacencia1: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + l}_{j - 1}",
-                            )
-                            problema += (
-                                barcos_v[i, j, k] + barcos_v[i + l, j - 1, k_otro] <= 1,
-                                f"adyacencia2: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + l}_{j - 1}",
-                            )
-                        if j + 1 < m and i + l < n:
-                            problema += (
-                                barcos_v[i, j, k] + barcos_h[i + l, j + 1, k_otro] <= 1,
-                                f"adyacencia3: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + l}_{j + 1}",
-                            )
-                            problema += (
-                                barcos_v[i, j, k] + barcos_v[i + l, j + 1, k_otro] <= 1,
-                                f"adyacencia4: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + l}_{j + 1}",
-                            )
-
-                    if i + largo + 1 < n:
-                        problema += (
-                            barcos_v[i, j, k] + barcos_v[i + largo + 1, j, k_otro] <= 1,
-                            f"adyacencia13: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + largo + 1}_{j}",
-                        )
-                        problema += (
-                            barcos_v[i, j, k] + barcos_h[i + largo + 1, j, k_otro] <= 1,
-                            f"adyacencia14: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + largo + 1}_{j}",
-                        )
-
-                        if j - 1 >= 0:
-                            problema += (
-                                barcos_v[i, j, k]
-                                + barcos_v[i + largo + 1, j - 1, k_otro]
-                                <= 1,
-                                f"adyacencia5: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i}_{j + largo}",
-                            )
-                            problema += (
-                                barcos_v[i, j, k]
-                                + barcos_h[i + largo + 1, j - 1, k_otro]
-                                <= 1,
-                                f"adyacencia6: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + largo + 1}_{j -1}",
-                            )
-
-                        if j + 1 < m:
-                            problema += (
-                                barcos_v[i, j, k]
-                                + barcos_v[i + largo + 1, j + 1, k_otro]
-                                <= 1,
-                                f"adyacencia15: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + largo + 1}_{j+1}",
-                            )
-                            problema += (
-                                barcos_v[i, j, k]
-                                + barcos_h[i + largo + 1, j + 1, k_otro]
-                                <= 1,
-                                f"adyacencia16: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + largo + 1}_{j+1}",
-                            )
-
-                    if i - 1 >= 0:
-                        problema += (
-                            barcos_v[i, j, k] + barcos_v[i - 1, j, k_otro] <= 1,
-                            f"adyacencia7: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j}",
-                        )
-                        problema += (
-                            barcos_v[i, j, k] + barcos_h[i - 1, j, k_otro] <= 1,
-                            f"adyacencia8: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j}",
-                        )
+                    # Verificar que alrededor de la posicion inicial del barco no haya otro barco
                     if i - 1 >= 0 and j - 1 >= 0:
                         problema += (
                             barcos_v[i, j, k] + barcos_v[i - 1, j - 1, k_otro] <= 1,
-                            f"adyacencia9: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j - 1}",
+                            f"posocion_inicial_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j - 1}",
                         )
                         problema += (
                             barcos_v[i, j, k] + barcos_h[i - 1, j - 1, k_otro] <= 1,
-                            f"adyacencia10: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j - 1}",
+                            f"posocion_inicial_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j - 1}",
+                        )
+                    if i - 1 >= 0:
+                        problema += (
+                            barcos_v[i, j, k] + barcos_v[i - 1, j, k_otro] <= 1,
+                            f"posocion_inicial_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j}",
+                        )
+                        problema += (
+                            barcos_v[i, j, k] + barcos_h[i - 1, j, k_otro] <= 1,
+                            f"posocion_inicial_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j}",
                         )
                     if i - 1 >= 0 and j + 1 < m:
                         problema += (
                             barcos_v[i, j, k] + barcos_v[i - 1, j + 1, k_otro] <= 1,
-                            f"adyacencia11: barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j + 1}",
+                            f"posocion_inicial_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i - 1}_{j + 1}",
                         )
                         problema += (
                             barcos_v[i, j, k] + barcos_h[i - 1, j + 1, k_otro] <= 1,
-                            f"adyacencia12: barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j + 1}",
+                            f"posocion_inicial_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i - 1}_{j + 1}",
+                        )
+
+                    # Verificar que a lo largo del barco no haya otro en la misma posicion, ni de forma adyacente
+                    for l in range(largo):
+                        if i + l < n:
+                            problema += (
+                                barcos_v[i, j, k] + barcos_v[i + l, j, k_otro] <= 1,
+                                f"barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + l}_{j}",
+                            )
+                            problema += (
+                                barcos_v[i, j, k] + barcos_h[i + l, j, k_otro] <= 1,
+                                f"barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + l}_{j}",
+                            )
+                        if i + l < n and j - 1 >= 0:
+                            problema += (
+                                barcos_v[i, j, k] + barcos_v[i + l, j - 1, k_otro] <= 1,
+                                f"adyacencia_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + l}_{j - 1}",
+                            )
+                            problema += (
+                                barcos_v[i, j, k] + barcos_h[i + l, j - 1, k_otro] <= 1,
+                                f"adyacencia_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + l}_{j - 1}",
+                            )
+                        if i + l < n and j + 1 < m:
+                            problema += (
+                                barcos_v[i, j, k] + barcos_v[i + l, j + 1, k_otro] <= 1,
+                                f"adyacencia_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + l}_{j + 1}",
+                            )
+                            problema += (
+                                barcos_v[i, j, k] + barcos_h[i + l, j + 1, k_otro] <= 1,
+                                f"adyacencia_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + l}_{j + 1}",
+                            )
+
+                    # Verificar que al rededor de la posicion final del barco no haya otro barco
+                    if i + largo < n:
+                        problema += (
+                            barcos_v[i, j, k] + barcos_v[i + largo, j, k_otro] <= 1,
+                            f"posicion_final_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + largo}_{j}",
+                        )
+                        problema += (
+                            barcos_v[i, j, k] + barcos_h[i + largo, j, k_otro] <= 1,
+                            f"posicion_final_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + largo}_{j}",
+                        )
+                    if i + largo < n and j - 1 >= 0:
+                        problema += (
+                            barcos_v[i, j, k] + barcos_v[i + largo, j - 1, k_otro] <= 1,
+                            f"posicion_final_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + largo}_{j - 1}",
+                        )
+                        problema += (
+                            barcos_v[i, j, k] + barcos_h[i + largo, j - 1, k_otro] <= 1,
+                            f"posicion_final_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + largo}_{j - 1}",
+                        )
+                    if i + largo < n and j + 1 < m:
+                        problema += (
+                            barcos_v[i, j, k] + barcos_v[i + largo, j + 1, k_otro] <= 1,
+                            f"posicion_final_barco_V_{k}_{i}_{j}_contra_barco_V_{k_otro}_{i + largo}_{j + 1}",
+                        )
+                        problema += (
+                            barcos_v[i, j, k] + barcos_h[i + largo, j + 1, k_otro] <= 1,
+                            f"posicion_final_barco_V_{k}_{i}_{j}_contra_barco_H_{k_otro}_{i + largo}_{j + 1}",
                         )
 
     # RESOLVER
@@ -407,4 +377,5 @@ def problema(n, m, demandas_filas, demandas_columnas, barcos):
                 if barcos_v[i, j, k].varValue == 1:
                     print(f"Barco {k+1} en posición {i},{j}")
 
+    print()
     return tablero, demanda_cumplida

@@ -16,19 +16,39 @@ Donde n será la cantidad de filas, m la cantidad de columnas, y b la cantidad d
 Para ejecutar **todas las pruebas de la catedra**, ejecutar (siempre desde el root del repositorio)
 
 ```bash
-python3 pruebas.py
+python3 pruebas.py b
 ```
 
 Para ejecutar alguna prueba especifica, dejar el archivo .txt (debe respetar el formato de la catedra) en `./test_cases` y ejecutar
 
 ```bash
-python3 pruebas.py <nombre del .txt>
+python3 pruebas.py b <nombre del .txt>
 ```
 
 Por ejemplo, para ejecutar una prueba de `./test_cases/3_3_2.txt`, se debe ejecutar:
 
 ```bash
-python3 pruebas.py 3_3_2.txt
+python3 pruebas.py b 3_3_2.txt
+```
+
+## Programacion lineal
+
+Para ejecutar **todas las pruebas de la catedra**, ejecutar (siempre desde el root del repositorio)
+
+```bash
+python3 pruebas.py pl
+```
+
+Para ejecutar alguna prueba especifica, dejar el archivo .txt (debe respetar el formato de la catedra) en `./test_cases` y ejecutar
+
+```bash
+python3 pruebas.py pl <nombre del .txt>
+```
+
+Por ejemplo, para ejecutar una prueba de `./test_cases/3_3_2.txt`, se debe ejecutar:
+
+```bash
+python3 pruebas.py pl 3_3_2.txt
 ```
 
 ## Aproximación

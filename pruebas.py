@@ -61,7 +61,6 @@ def test(filename, problema):
     n = len(row_demand)
     m = len(col_demand)
 
-    total_demanda = sum(row_demand) + sum(col_demand)
     row_demand_inicial = row_demand.copy()
     col_demand_inicial = col_demand.copy()
 
@@ -73,6 +72,8 @@ def test(filename, problema):
         board = [[0] * m for _ in range(n)]
         barcos = [(i + 1, length) for i, length in enumerate(ships)]
         mejor_solucion = [board, float("inf")]
+        total_demanda = sum(row_demand) + sum(col_demand)
+
         init_time = time.time()
         problema_backtracking(
             board,
@@ -82,16 +83,10 @@ def test(filename, problema):
             mejor_solucion,
         )
         end_time = time.time()
+        demanda_cumplida = total_demanda - mejor_solucion[1]
+        board = mejor_solucion[0]
 
-        print_board(mejor_solucion[0], row_demand_inicial, col_demand_inicial)
-
-        print(f"Demanda total: {total_demanda}")
-        print(f"Demanda cumplida: {total_demanda - mejor_solucion[1]}")
-        print(f"Demanda insatisfecha: {mejor_solucion[1]}")
-
-        print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
-
-    if problema == "pl":
+    elif problema == "pl":
         init_time = time.time()
         board, demanda_cumplida = problema_pl(
             n,
@@ -101,10 +96,13 @@ def test(filename, problema):
             barcos=ships,
         )
         end_time = time.time()
+    else:
+        raise ValueError("Problema no válido")
 
-        print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
-        print_board(board, row_demand_inicial, col_demand_inicial)
-        print("Demanda cumplida:", demanda_cumplida)
+    print(f"Para el archivo {filename}:")
+    print_board(board, row_demand_inicial, col_demand_inicial)
+    print("Demanda cumplida:", int(demanda_cumplida))
+    print(f"Tiempo de ejecución: {end_time - init_time:.2f} segundos")
 
 
 if __name__ == "__main__":
@@ -118,12 +116,12 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 2:
         for filename in (
-            # "3_3_2.txt",
-            # "5_5_6.txt",
-            # "8_7_10.txt",
-            # "10_3_3.txt",
-            # "10_10_10.txt",
-            # "12_12_21.txt",
+            "3_3_2.txt",
+            "5_5_6.txt",
+            "8_7_10.txt",
+            "10_3_3.txt",
+            "10_10_10.txt",
+            "12_12_21.txt",
             "15_10_15.txt",
             "20_20_20.txt",
             "20_25_30.txt",
