@@ -124,8 +124,8 @@ if __name__ == "__main__":
             "12_12_21.txt",
             "15_10_15.txt",
             "20_20_20.txt",
-            # "20_25_30.txt",
-            # "30_25_25.txt",
+            "20_25_30.txt",
+            "30_25_25.txt",
         ):
             filename = "./test_cases/" + filename
             test(filename, problema)
