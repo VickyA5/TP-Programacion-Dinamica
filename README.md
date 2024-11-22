@@ -40,3 +40,9 @@ Para ejecutar el algoritmo de aproximación con alguna de las pruebas, por ejemp
 ```bash
 python3 aproximacion.py 3_3_2.txt
 ```
+
+Para obtener el factor que se obtiene al dividir la demanda obtenida por aproximación de un test case con la demanda obtenida óptima, ejecutar:
+
+```bash
+python3 factor_aproximacion.py <nombre del .txt>
+```
